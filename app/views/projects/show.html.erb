@@ -1,0 +1,11 @@
+<h2>プロジェクト詳細</h2>
+<p>顧客名: <%= @project.customer_name %></p>
+<p>商品名: <%= @project.product_name %></p>
+<p>出荷日: <%= @project.shipment_date %></p>
+
+<h3>スケジュール</h3>
+<ul>
+  <% @tasks.each do |task| %>
+    <li><%= task.name %>: <%= task.start_date %> - <%= task.end_date %></li>
+  <% end %>
+</ul>
