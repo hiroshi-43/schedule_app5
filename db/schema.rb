@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_29_070815) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_29_071005) do
+  create_table "lead_times", charset: "utf8", force: :cascade do |t|
+    t.string "task_name", null: false
+    t.integer "duration_days", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "projects", charset: "utf8", force: :cascade do |t|
     t.string "customer_name", null: false
     t.string "product_name", null: false
