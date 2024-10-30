@@ -10,33 +10,99 @@
     <p><strong>出荷日:</strong> <%= @project.shipment_date.strftime("%Y-%m-%d") %></p>
   </div>
 
-  <!-- スケジュール一覧 -->
-  <h3>スケジュール</h3>
-  <table class="task-table">
-    <thead>
-      <tr>
-        <th>タスク名</th>
-        <th>開始日</th>
-        <th>終了日</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @project.tasks.order(:start_date).each do |task| %>
-        <tr>
-          <td><%= task.name %></td>
-          <td><%= task.start_date.strftime("%Y-%m-%d") %></td>
-          <td><%= task.end_date.strftime("%Y-%m-%d") %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <!-- 全体スケジュールボックス -->
+  <div class="schedule-box">
+    <h3>全体スケジュール</h3>
+    
+    <% @project.tasks.order(:start_date).group_by { |task| task.start_date.year }.each do |year, tasks| %>
+      <h4 class="year-heading"><%= year %>年</h4>
+      <table class="task-table">
+        <tbody>
+          <% tasks.each do |task| %>
+            <tr>
+              <td><%= task.start_date.strftime("%-m/%-d") %></td>
+              <td><%= task.name %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+
+  <!-- リードタイムボックス -->
+  <div class="lead-time-box">
+    <button class="lead-time-toggle">リードタイム</button>
+    <div class="lead-time-container" style="display: none;">
+      <table class="lead-time-table">
+        <tbody>
+          <tr><td>処方決定 〜 容器試験依頼</td><td>3日</td></tr>
+          <tr><td>容器試験依頼 〜 容器試験スタート</td><td>20日</td></tr>
+          <tr><td>容器試験スタート 〜 容器試験終了</td><td>40日</td></tr>
+          <tr><td>容器試験終了 〜 注文書受領</td><td>7日</td></tr>
+          <tr><td>注文書受領 〜 資材発注</td><td>5日</td></tr>
+          <tr><td>資材発注 〜 資材納品</td><td>100日</td></tr>
+          <tr><td>資材納品 〜 生産</td><td>14日</td></tr>
+          <tr><td>生産 〜 出荷</td><td>14日</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <!-- スタイル -->
 <style>
-  .project-details { margin: 20px; padding: 20px; background-color: #f9f9f9; border-radius: 8px; }
+  .project-details { margin: 20px; padding: 20px; background-color: #f9f9f9; border-radius: 8px; text-align: left; }
   .project-info p { margin: 8px 0; }
-  .task-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  .task-table th, .task-table td { padding: 8px; border: 1px solid #ddd; text-align: left; }
-  .task-table th { background-color: #f2f2f2; }
+  
+  /* 全体スケジュールボックス */
+  .schedule-box {
+    border: 1px solid #ccc; 
+    padding: 10px; 
+    margin-top: 15px; 
+    border-radius: 8px;
+    background-color: #f4f4f4;
+    width: 300px; /* コンパクトな固定幅 */
+  }
+  .task-table { width: 100%; border-collapse: collapse; }
+  .task-table td { padding: 2px; border: 1px solid #ddd; text-align: left; }
+  .task-table td:first-child { width: 80px; }
+  h4 { margin: 0; font-size: 1.1em; }
+
+  /* リードタイムボックス */
+  .lead-time-box {
+    border: 1px solid #ccc; 
+    padding: 10px; 
+    margin-top: 15px; 
+    border-radius: 8px;
+    background-color: #f4f4f4;
+    width: 300px; /* コンパクトな固定幅 */
+  }
+  .lead-time-toggle { 
+    margin-top: 10px; 
+    padding: 5px 10px; 
+    font-size: 1em; 
+    cursor: pointer; 
+    background-color: #4b615d; 
+    color: white; 
+    border: none; 
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  .lead-time-toggle:hover { background-color: #3e504d; }
+
+  .lead-time-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .lead-time-table th, .lead-time-table td { padding: 2px; border: 1px solid #ddd; text-align: center; }
+  .lead-time-table td:first-child { text-align: left; }
 </style>
+
+<!-- JavaScript -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const leadTimeToggle = document.querySelector(".lead-time-toggle");
+    const leadTimeContainer = document.querySelector(".lead-time-container");
+
+    leadTimeToggle.addEventListener("click", function() {
+      leadTimeContainer.style.display = leadTimeContainer.style.display === "none" ? "block" : "none";
+    });
+  });
+</script>
