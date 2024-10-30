@@ -46,6 +46,8 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    active_hash (3.3.1)
+      activesupport (>= 5.0.0)
     activejob (7.0.8.6)
       activesupport (= 7.0.8.6)
       globalid (>= 0.3.6)
@@ -81,6 +83,7 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
+    coderay (1.1.3)
     concurrent-ruby (1.3.4)
     crass (1.0.6)
     date (3.3.4)
@@ -88,6 +91,7 @@ GEM
       irb (~> 1.10)
       reline (>= 0.3.8)
     erubi (1.13.0)
+    flatpickr (4.6.13.1)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.6)
@@ -130,6 +134,11 @@ GEM
     nio4r (2.7.4)
     nokogiri (1.16.7-x86_64-darwin)
       racc (~> 1.4)
+    pry (0.14.2)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    pry-rails (0.3.11)
+      pry (>= 0.13.0)
     psych (5.1.2)
       stringio
     public_suffix (6.0.1)
@@ -217,12 +226,15 @@ PLATFORMS
   x86_64-darwin-23
 
 DEPENDENCIES
+  active_hash
   bootsnap
   capybara
   debug
+  flatpickr
   importmap-rails
   jbuilder
   mysql2 (~> 0.5)
+  pry-rails
   puma (~> 5.0)
   rails (~> 7.0.0)
   selenium-webdriver
