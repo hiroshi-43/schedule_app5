@@ -5,20 +5,20 @@
   <p>カテゴリー: <%= f.collection_select :category_id, Category.all, :id, :name %></p>
   <p>出荷日: <%= f.text_field :shipment_date, class: "date-picker" %></p>
   <%= f.submit "プロジェクト作成" %>
-
-  <!-- Flatpickr JavaScriptとCSSの読み込み -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      flatpickr(".date-picker", {
-        dateFormat: "Y-m-d",  // 日付フォーマット（YYYY-MM-DD形式）
-        minDate: "today",     // 今日以降の日付のみ選択可能
-        maxDate: new Date().fp_incr(365 * 5),  // 最大5年後まで
-        locale: "ja"          // 月を数字で表示するための日本語ロケール設定
-      });
-    });
-  </script>
 <% end %>
+
+<!-- FlatpickrのCSSとJavaScriptの読み込み -->
+<%= stylesheet_link_tag 'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css' %>
+<%= javascript_include_tag 'https://cdn.jsdelivr.net/npm/flatpickr' %>
+<%= javascript_include_tag 'https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js' %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    flatpickr(".date-picker", {
+      dateFormat: "Y-m-d",    // 日付フォーマット（YYYY-MM-DD形式）
+      minDate: "today",       // 今日以降の日付のみ選択可能
+      maxDate: new Date().fp_incr(365 * 5),  // 最大5年後まで
+      locale: "ja"            // 月を数字で表示するための日本語ロケール設定
+    });
+  });
+</script>
