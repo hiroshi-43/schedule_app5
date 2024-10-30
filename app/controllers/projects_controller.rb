@@ -1,4 +1,9 @@
 class ProjectsController < ApplicationController
+
+  def index
+    @projects = Project.all.order(:created_at)
+  end
+  
   def new
     @project = Project.new
   end

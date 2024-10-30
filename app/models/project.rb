@@ -1,6 +1,9 @@
 class Project < ApplicationRecord
   has_many :tasks, dependent: :destroy
 
+  extend ActiveHash::Associations::ActiveRecordExtensions
+  belongs_to :category
+
   # スケジュール計算メソッド
   def calculate_schedule
     # 出荷日を基準にリードタイムに従って各タスクの日付を計算

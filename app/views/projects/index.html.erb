@@ -1,0 +1,26 @@
+<%= link_to '新規プロジェクト作成', new_project_path %>
+
+<table>
+  <thead>
+    <tr>
+      <th>顧客名</th>
+      <th>商品名</th>
+      <th>表示容量</th>
+      <th>カテゴリーID</th>
+      <th>出荷日</th>
+      <th>詳細</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @projects.each do |project| %>
+      <tr>
+        <td><%= project.customer_name %></td>
+        <td><%= project.product_name %></td>
+        <td><%= project.display_volume %></td>
+        <td><%= project.category_id %></td>
+        <td><%= project.shipment_date %></td>
+        <td><%= link_to '詳細', project_path(project) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
