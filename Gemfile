@@ -74,3 +74,5 @@ end
 gem 'pry-rails'
 gem 'active_hash'
 gem 'flatpickr'
+gem 'business_time'
+gem 'holidays'
