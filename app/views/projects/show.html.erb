@@ -13,9 +13,9 @@
   <div class="schedules-container">
     <!-- 全体スケジュールボックス -->
     <div class="schedule-box">
-      <h3 class="centered-heading">全体スケジュール</h3>
+      <h3 class="schedule-title">全体スケジュール</h3>
       <% all_tasks = @project.tasks.where.not("name LIKE ?", "化粧箱 - %").order(:start_date) %>
-      <% all_tasks = all_tasks.to_a << Task.new(name: "出荷", start_date: @project.shipment_date) %> <!-- 出荷タスクの追加 -->
+      <% all_tasks = all_tasks.to_a << Task.new(name: "出荷", start_date: @project.shipment_date) %>
       <% all_tasks.group_by { |task| task.start_date.year }.each do |year, tasks| %>
         <h4 class="year-heading"><%= year %>年</h4>
         <table class="task-table">
@@ -30,7 +30,7 @@
         </table>
       <% end %>
       <div class="lead-time-box">
-        <button class="lead-time-toggle">全体スケジュールのリードタイム</button>
+        <button class="lead-time-toggle">リードタイム</button>
         <div class="lead-time-container" style="display: none;">
           <table class="lead-time-table">
             <tbody>
@@ -50,10 +50,10 @@
 
     <!-- 化粧箱スケジュールボックス -->
     <div class="schedule-box">
-      <h3 class="centered-heading">化粧箱スケジュール</h3>
+      <h3 class="schedule-title">化粧箱スケジュール</h3>
       <% box_tasks = @project.tasks.where("name LIKE ?", "化粧箱 - %").order(:start_date) %>
       <% main_material_delivery_date = @project.tasks.find_by(name: "資材納品")&.start_date %>
-      <% box_tasks = box_tasks.to_a << Task.new(name: "化粧箱 - 資材納品", start_date: main_material_delivery_date) if main_material_delivery_date %> <!-- 資材納品タスクの追加 -->
+      <% box_tasks = box_tasks.to_a << Task.new(name: "化粧箱 - 資材納品", start_date: main_material_delivery_date) if main_material_delivery_date %>
       <% box_tasks.group_by { |task| task.start_date.year }.each do |year, tasks| %>
         <h4 class="year-heading"><%= year %>年</h4>
         <table class="task-table">
@@ -68,7 +68,7 @@
         </table>
       <% end %>
       <div class="lead-time-box">
-        <button class="lead-time-toggle">化粧箱のリードタイム</button>
+        <button class="lead-time-toggle">リードタイム</button>
         <div class="lead-time-container" style="display: none;">
           <table class="lead-time-table">
             <tbody>
@@ -85,7 +85,7 @@
 
     <!-- 追加スケジュールボックス -->
     <div class="schedule-box">
-      <h3 class="centered-heading">追加スケジュール</h3>
+      <h3 class="schedule-title">追加スケジュール</h3>
       <% @project.tasks.where("name LIKE ?", "追加 - %").order(:start_date).group_by { |task| task.start_date.year }.each do |year, tasks| %>
         <h4 class="year-heading"><%= year %>年</h4>
         <table class="task-table">
@@ -100,7 +100,7 @@
         </table>
       <% end %>
       <div class="lead-time-box">
-        <button class="lead-time-toggle">追加スケジュールのリードタイム</button>
+        <button class="lead-time-toggle">リードタイム</button>
         <div class="lead-time-container" style="display: none;">
           <table class="lead-time-table">
             <tbody>
@@ -119,8 +119,6 @@
   .project-details { margin: 20px; padding: 20px; background-color: #f9f9f9; border-radius: 8px; }
   .project-info p { margin: 8px 0; }
   .schedules-container { display: flex; justify-content: space-between; gap: 1%; }
-
-  /* 各スケジュールボックス */
   .schedule-box {
     width: 30%; 
     border: 1px solid #ccc;
@@ -129,17 +127,7 @@
     background-color: #f4f4f4;
     margin-top: 15px;
   }
-
-  /* 中央寄せの見出し */
-  .centered-heading {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.2em;
-    font-weight: bold;
-  }
-
-  /* タスクテーブル */
+  .schedule-title { text-align: center; }
   .task-table { width: 100%; border-collapse: collapse; }
   .task-table td { padding: 2px; border: 1px solid #ddd; text-align: left; }
   .task-table td:first-child { width: 60px; }
@@ -158,8 +146,6 @@
     transition: background-color 0.3s;
   }
   .lead-time-toggle:hover { background-color: #3e504d; }
-
-  /* リードタイムテーブル */
   .lead-time-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
   .lead-time-table th, .lead-time-table td { padding: 2px; border: 1px solid #ddd; text-align: center; }
   .lead-time-table td:first-child { text-align: left; }
@@ -171,7 +157,7 @@
     document.querySelectorAll(".lead-time-toggle").forEach(toggle => {
       toggle.addEventListener("click", function() {
         const container = this.nextElementSibling;
-        container.style.display = container.style.display === "none" ? "block" : "none";
+        container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
       });
     });
   });
