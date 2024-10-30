@@ -3,6 +3,6 @@
   <p>商品名: <%= f.text_field :product_name %></p>
   <p>表示容量: <%= f.text_field :display_volume %></p>
   <p>カテゴリー: <%= f.collection_select :category_id, Category.all, :id, :name %></p>
-  <p>出荷日: <%= f.date_select :shipment_date %></p>
+  <p>出荷日: <%= f.date_select :shipment_date, use_month_numbers: true, start_year: Date.today.year, end_year: Date.today.year + 5 %></p>
   <%= f.submit "プロジェクト作成" %>
 <% end %>
