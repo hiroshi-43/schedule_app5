@@ -1,11 +1,42 @@
-<h2>プロジェクト詳細</h2>
-<p>顧客名: <%= @project.customer_name %></p>
-<p>商品名: <%= @project.product_name %></p>
-<p>出荷日: <%= @project.shipment_date %></p>
+<div class="project-details">
+  <h2>プロジェクト詳細</h2>
 
-<h3>スケジュール</h3>
-<ul>
-  <% @tasks.each do |task| %>
-    <li><%= task.name %>: <%= task.start_date %> - <%= task.end_date %></li>
-  <% end %>
-</ul>
+  <!-- プロジェクト情報 -->
+  <div class="project-info">
+    <p><strong>顧客名:</strong> <%= @project.customer_name %></p>
+    <p><strong>商品名:</strong> <%= @project.product_name %></p>
+    <p><strong>表示容量:</strong> <%= @project.display_volume %></p>
+    <p><strong>カテゴリー:</strong> <%= @project.category.name %></p>
+    <p><strong>出荷日:</strong> <%= @project.shipment_date.strftime("%Y-%m-%d") %></p>
+  </div>
+
+  <!-- スケジュール一覧 -->
+  <h3>スケジュール</h3>
+  <table class="task-table">
+    <thead>
+      <tr>
+        <th>タスク名</th>
+        <th>開始日</th>
+        <th>終了日</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @project.tasks.order(:start_date).each do |task| %>
+        <tr>
+          <td><%= task.name %></td>
+          <td><%= task.start_date.strftime("%Y-%m-%d") %></td>
+          <td><%= task.end_date.strftime("%Y-%m-%d") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<!-- スタイル -->
+<style>
+  .project-details { margin: 20px; padding: 20px; background-color: #f9f9f9; border-radius: 8px; }
+  .project-info p { margin: 8px 0; }
+  .task-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  .task-table th, .task-table td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+  .task-table th { background-color: #f2f2f2; }
+</style>
