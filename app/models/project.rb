@@ -2,6 +2,7 @@ require 'business_time'
 
 class Project < ApplicationRecord
   has_many :tasks, dependent: :destroy
+  accepts_nested_attributes_for :tasks
 
   extend ActiveHash::Associations::ActiveRecordExtensions
   belongs_to :category
@@ -12,7 +13,7 @@ class Project < ApplicationRecord
     current_date = self.shipment_date
 
     # タスクとリードタイムを順に処理
-    tasks = [
+    task_definitions = [
       { name: "出荷", duration: 0 },
       { name: "生産", duration: 14 },
       { name: "資材納品", duration: 14 },
@@ -24,23 +25,22 @@ class Project < ApplicationRecord
       { name: "処方決定", duration: 3 }
     ]
 
-    # タスクが既に存在する場合は削除
+    # 既存タスクを削除
     self.tasks.destroy_all
 
-    # リードタイムに従ってタスクを作成
-    tasks.each_cons(2) do |next_task, current_task|
+    # 各タスクをリードタイムに従って作成
+    task_definitions.each do |task_def|
       end_date = current_date
-      start_date = current_task[:duration].business_days.before(end_date)  # 営業日数を逆算して取得
+      start_date = task_def[:duration].business_days.before(end_date)  # 営業日数を逆算して取得
 
-      # タスクを作成
-      Task.create(
-        project_id: self.id,
-        name: current_task[:name],
+      # タスクをプロジェクトに関連付けて作成
+      self.tasks.create(
+        name: task_def[:name],
         start_date: start_date,
         end_date: end_date
       )
 
-      # 次のタスクの終了日を更新
+      # 現在の日付を次のタスク用に更新
       current_date = start_date
     end
   end

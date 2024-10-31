@@ -1,0 +1,125 @@
+<%= form_with model: @project, url: project_path(@project), method: :patch, local: true do |f| %>
+  <h2>プロジェクト編集</h2>
+
+  <!-- プロジェクト情報 -->
+  <div class="project-info">
+    <p><strong>顧客名:</strong> <%= f.text_field :customer_name, class: "project-input" %></p>
+    <p><strong>商品名:</strong> <%= f.text_field :product_name, class: "project-input" %></p>
+    <p><strong>表示容量:</strong> <%= f.text_field :display_volume, class: "project-input" %></p>
+    <p><strong>カテゴリー:</strong> <%= f.collection_select :category_id, Category.all, :id, :name, class: "project-input" %></p>
+    <p><strong>出荷日:</strong> <%= f.date_field :shipment_date, class: "project-input" %></p>
+  </div>
+
+  <!-- 全体スケジュールの編集セクション -->
+  <div class="schedule-section">
+    <h3>全体スケジュール</h3>
+    <div class="tasks-container">
+      <%= f.fields_for :tasks, @project.tasks.where.not("name LIKE ?", "化粧箱 - %").order(:start_date) do |tf| %>
+        <div class="task-row">
+          <div class="task-field">
+            <%= tf.text_field :name, placeholder: "タスク名", class: "task-name-input" %>
+          </div>
+          <div class="task-field">
+            <%= tf.date_field :start_date, placeholder: "開始日", class: "task-date-input" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- 化粧箱スケジュールの編集セクション -->
+  <div class="schedule-section">
+    <h3>化粧箱スケジュール</h3>
+    <div class="tasks-container">
+      <%= f.fields_for :tasks, @project.tasks.where("name LIKE ?", "化粧箱 - %").order(:start_date) do |tf| %>
+        <div class="task-row">
+          <div class="task-field">
+            <%= tf.text_field :name, placeholder: "タスク名", class: "task-name-input" %>
+          </div>
+          <div class="task-field">
+            <%= tf.date_field :start_date, placeholder: "開始日", class: "task-date-input" %>
+          </div>
+        </div>
+      <% end %>
+
+      <%# 資材納品日を化粧箱スケジュールに追加 %>
+      <% material_delivery_task = @project.tasks.find_by(name: "資材納品") %>
+      <% if material_delivery_task %>
+        <%= f.fields_for :tasks, material_delivery_task do |tf| %>
+          <div class="task-row">
+            <div class="task-field">
+              <%= tf.text_field :name, class: "task-name-input", readonly: true %>
+            </div>
+            <div class="task-field">
+              <%= tf.date_field :start_date, class: "task-date-input" %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- 更新ボタン -->
+  <div class="update-button-container">
+    <%= f.submit "更新", class: "update-btn" %>
+  </div>
+<% end %>
+
+<!-- スタイル -->
+<style>
+  .project-info {
+    margin-bottom: 20px;
+  }
+
+  .project-input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+  }
+
+  .schedule-section {
+    margin-top: 30px;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+  }
+
+  .tasks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* 行間を減らす */
+  }
+
+  .task-row {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 各タスクの項目間の間隔を調整 */
+    margin-bottom: 4px; /* 行間を少なくする */
+  }
+
+  .task-name-input, .task-date-input {
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 180px;
+  }
+
+  .update-button-container {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .update-btn {
+    padding: 8px 16px;
+    background-color: #4b615d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .update-btn:hover {
+    background-color: #3e504d;
+  }
+</style>
