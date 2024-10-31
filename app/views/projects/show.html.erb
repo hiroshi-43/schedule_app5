@@ -128,18 +128,22 @@
     <div class="swiper-button-next"></div>
     <div class="swiper-button-prev"></div>
   </div>
+
+<!-- 編集ページへ遷移するボタン -->
+<div class="edit-button-container">
+  <%= link_to '編集', edit_project_path(@project), class: 'edit-button' %>
+</div>
 </div>
 
-<!-- スタイル -->
 <style>
-  .project-details { margin: 20px; padding: 20px; background-color: #f9f9f9; border-radius: 8px; }
+  .project-details { margin: 20px; padding: 20px; background-color: #f9ff9; border-radius: 8px; }
   .project-info p { margin: 8px 0; }
   .schedule-box {
     width: 100%;
-    max-width: 370px; /* 幅を広げ、隙間を減らす */
+    max-width: 450px; /* 幅を広げ、隙間を減らす */
     padding: 10px;
-    background-color: #f4f4f4;
-    border: 1px solid #ccc;
+    background-color: #fff;
+    border: 1.5px solid #1496a0;
     border-radius: 8px;
   }
   .swiper-container { width: 100%; padding-top: 20px; padding-bottom: 20px; }
@@ -151,14 +155,53 @@
     padding: 4px 8px;
     font-size: 1em;
     cursor: pointer;
-    background-color: #4b615d;
+    background-color: #1496a0;
     color: white;
     border: none;
     border-radius: 5px;
   }
   .lead-time-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
-  .lead-time-table th, .lead-time-table td { padding: 2px; border: 1px solid #ddd; text-align: center; }
+  .lead-time-table th, .lead-time-table td { padding: 2px; border: 1px solid #ddd; }
+  
+  /* タスク文言を右寄せ */
+  .lead-time-table td:first-child { text-align: left; }
+
+  .year-heading {
+    margin: 0; 
+    font-size: 1.1em;
+    padding-top: 4px; /* 行間を狭くするための設定 */
+  }
+
+  .task-table tbody tr {
+    line-height: 1.5; /* 日程の行間 */
+  }
+
+ /* 編集ボタンのスタイル */
+  .edit-button-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+
+  .edit-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1496a0;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+
+  .edit-button:hover {
+    background-color: #3e504d;
+  }
+
+  /* 他のスタイル */
+  .project-details { margin: 20px; padding: 20px; background-color: #f9f9f9; border-radius: 8px; position: relative; }
 </style>
+
 
 <!-- SwiperのJavaScriptを読み込み -->
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
