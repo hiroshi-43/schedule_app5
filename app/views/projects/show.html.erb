@@ -7,7 +7,12 @@
     <p><strong>商品名:</strong> <%= @project.product_name %></p>
     <p><strong>表示容量:</strong> <%= @project.display_volume %></p>
     <p><strong>カテゴリー:</strong> <%= @project.category.name %></p>
-    <p><strong>出荷日:</strong> <%= @project.shipment_date.strftime("%Y/%m/%d") %></p>
+    <p><strong>出荷日:</strong> 
+      <span style="<%= @project.shipment_date < Date.today ? 'color: red;' : '' %>"><%= @project.shipment_date.strftime("%Y/%m/%d") %></span>
+      <% if @project.shipment_date < Date.today %>
+      <span style="color: red; font-weight: bold; margin-left: 5px;">要チェック</span>
+      <% end %>
+    </p>
   </div>
 
   <div class="schedules-container">
@@ -18,16 +23,17 @@
       <% all_tasks = all_tasks.to_a << Task.new(name: "出荷", start_date: @project.shipment_date) %>
       <% all_tasks.group_by { |task| task.start_date.year }.each do |year, tasks| %>
         <h4 class="year-heading"><%= year %>年</h4>
-        <table class="task-table">
-          <tbody>
-            <% tasks.each do |task| %>
-              <tr>
-                <td><%= task.start_date.strftime("%-m/%-d") %></td>
-                <td><%= task.name %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
+      <table class="task-table">
+        <tbody>
+          <% tasks.each do |task| %>
+            <% is_past = task.start_date < Date.today %>
+              <tr style="<%= is_past ? 'color: #A9A9A9;' : '' %>">
+              <td style="text-align: right;"><%= task.start_date.strftime("%-m/%-d") %></td>
+              <td style="padding-left: 10px;"><%= task.name %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
       <% end %>
       <div class="lead-time-box">
         <button class="lead-time-toggle">リードタイム</button>
@@ -130,7 +136,7 @@
   .schedule-title { text-align: center; }
   .task-table { width: 100%; border-collapse: collapse; }
   .task-table td { padding: 2px; border: 1px solid #ddd; text-align: left; }
-  .task-table td:first-child { width: 60px; }
+  .task-table td:first-child { width: 60px; text-align: right; padding-right: 15px; } /* 日程とタスクの間にスペースを追加 */
   h4 { margin: 0; font-size: 1.1em; }
 
   /* リードタイムボタン */
@@ -150,6 +156,8 @@
   .lead-time-table th, .lead-time-table td { padding: 2px; border: 1px solid #ddd; text-align: center; }
   .lead-time-table td:first-child { text-align: left; }
 </style>
+
+
 
 <!-- JavaScript -->
 <script>
