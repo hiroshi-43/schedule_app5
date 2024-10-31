@@ -74,6 +74,9 @@ GEM
     bootsnap (1.18.4)
       msgpack (~> 1.2)
     builder (3.3.0)
+    business_time (0.13.0)
+      activesupport (>= 3.2.0)
+      tzinfo
     capybara (3.40.0)
       addressable
       matrix
@@ -94,6 +97,7 @@ GEM
     flatpickr (4.6.13.1)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    holidays (8.8.0)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     importmap-rails (2.0.3)
@@ -228,9 +232,11 @@ PLATFORMS
 DEPENDENCIES
   active_hash
   bootsnap
+  business_time
   capybara
   debug
   flatpickr
+  holidays
   importmap-rails
   jbuilder
   mysql2 (~> 0.5)

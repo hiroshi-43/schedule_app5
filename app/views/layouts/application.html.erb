@@ -11,6 +11,54 @@
   </head>
 
   <body>
+    <!-- ヘッダー -->
+    <header class="app-header">
+      <div class="app-title">
+        <%= link_to "CAT'S HAND", root_path, class: "app-title-link" %>
+      </div>
+      <div class="auth-buttons">
+        <button class="login-btn">ログイン</button>
+        <button class="signup-btn">新規登録</button>
+      </div>
+    </header>
+
+    <!-- メインコンテンツ -->
     <%= yield %>
+
+    <!-- スタイル -->
+    <style>
+      .app-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #f5aa3c; /* 背景色 */
+        color: #fff;
+      }
+      .app-title-link {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #fff;
+        text-decoration: none;
+      }
+      .app-title-link:hover {
+        text-decoration: underline;
+      }
+      .auth-buttons button {
+        margin-left: 10px;
+        padding: 8px 15px;
+        font-size: 1em;
+        color: #4b615d;
+        background-color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .auth-buttons button:hover {
+        background-color: #3e504d;
+        color: #fff;
+      }
+    </style>
   </body>
 </html>

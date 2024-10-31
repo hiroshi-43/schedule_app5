@@ -1,11 +1,227 @@
-<h2>プロジェクト詳細</h2>
-<p>顧客名: <%= @project.customer_name %></p>
-<p>商品名: <%= @project.product_name %></p>
-<p>出荷日: <%= @project.shipment_date %></p>
+<!-- SwiperのCSSを読み込み -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
-<h3>スケジュール</h3>
-<ul>
-  <% @tasks.each do |task| %>
-    <li><%= task.name %>: <%= task.start_date %> - <%= task.end_date %></li>
-  <% end %>
-</ul>
+<div class="project-details">
+  <h2>プロジェクト詳細</h2>
+
+  <!-- プロジェクト情報 -->
+  <div class="project-info">
+    <p><strong>顧客名:</strong> <%= @project.customer_name %></p>
+    <p><strong>商品名:</strong> <%= @project.product_name %></p>
+    <p><strong>表示容量:</strong> <%= @project.display_volume %></p>
+    <p><strong>カテゴリー:</strong> <%= @project.category.name %></p>
+    <p><strong>出荷日:</strong> 
+      <span style="<%= @project.shipment_date < Date.today ? 'color: red;' : '' %>"><%= @project.shipment_date.strftime("%Y/%m/%d") %></span>
+      <% if @project.shipment_date < Date.today %>
+      <span style="color: red; font-weight: bold; margin-left: 5px;">要チェック</span>
+      <% end %>
+    </p>
+  </div>
+
+  <!-- Swiperコンテナ開始 -->
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+      
+      <!-- 全体スケジュールボックス -->
+      <div class="swiper-slide">
+        <div class="schedule-box">
+          <h3 class="schedule-title">全体スケジュール</h3>
+          <% all_tasks = @project.tasks.where.not("name LIKE ?", "化粧箱 - %").order(:start_date) %>
+          <% all_tasks = all_tasks.to_a << Task.new(name: "出荷", start_date: @project.shipment_date) %>
+          <% all_tasks.group_by { |task| task.start_date.year }.each do |year, tasks| %>
+            <h4 class="year-heading"><%= year %>年</h4>
+            <table class="task-table">
+              <tbody>
+                <% tasks.each do |task| %>
+                  <tr>
+                    <td style="text-align: right; white-space: nowrap;"><%= task.start_date.strftime("%-m/%-d") %></td>
+                    <td style="padding-left: 8px; white-space: nowrap;"><%= task.name %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          <% end %>
+          <div class="lead-time-box">
+            <button class="lead-time-toggle">リードタイム</button>
+            <div class="lead-time-container" style="display: none;">
+              <table class="lead-time-table">
+                <tbody>
+                  <tr><td>処方決定 〜 容器試験依頼</td><td>3日</td></tr>
+                  <tr><td>容器試験依頼 〜 容器試験スタート</td><td>20日</td></tr>
+                  <tr><td>容器試験スタート 〜 容器試験終了</td><td>40日</td></tr>
+                  <tr><td>容器試験終了 〜 注文書受領</td><td>7日</td></tr>
+                  <tr><td>注文書受領 〜 資材発注</td><td>5日</td></tr>
+                  <tr><td>資材発注 〜 資材納品</td><td>100日</td></tr>
+                  <tr><td>資材納品 〜 生産</td><td>14日</td></tr>
+                  <tr><td>生産 〜 出荷</td><td>14日</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 化粧箱スケジュールボックス -->
+      <div class="swiper-slide">
+        <div class="schedule-box">
+          <h3 class="schedule-title">化粧箱スケジュール</h3>
+          <% box_tasks = @project.tasks.where("name LIKE ?", "化粧箱 - %").order(:start_date) %>
+          <% main_material_delivery_date = @project.tasks.find_by(name: "資材納品")&.start_date %>
+          <% box_tasks = box_tasks.to_a << Task.new(name: "化粧箱 - 資材納品", start_date: main_material_delivery_date) if main_material_delivery_date %>
+          <% box_tasks.group_by { |task| task.start_date.year }.each do |year, tasks| %>
+            <h4 class="year-heading"><%= year %>年</h4>
+            <table class="task-table">
+              <tbody>
+                <% tasks.each do |task| %>
+                  <tr>
+                    <td style="white-space: nowrap;"><%= task.start_date.strftime("%-m/%-d") %></td>
+                    <td style="padding-left: 8px; white-space: nowrap;"><%= task.name.gsub("化粧箱 - ", "") %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          <% end %>
+          <div class="lead-time-box">
+            <button class="lead-time-toggle">リードタイム</button>
+            <div class="lead-time-container" style="display: none;">
+              <table class="lead-time-table">
+                <tbody>
+                  <tr><td>出稿 〜 青焼UP</td><td>14日</td></tr>
+                  <tr><td>青焼UP 〜 青焼校了</td><td>7日</td></tr>
+                  <tr><td>青焼校了 〜 試刷UP</td><td>14日</td></tr>
+                  <tr><td>試刷UP 〜 試刷校了</td><td>7日</td></tr>
+                  <tr><td>試刷校了 〜 資材納品</td><td>30日</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 追加スケジュール 1 -->
+      <div class="swiper-slide">
+        <div class="schedule-box">
+          <h3 class="schedule-title">追加スケジュール 1</h3>
+          <!-- 追加スケジュールの内容をここに記述 -->
+        </div>
+      </div>
+
+      <!-- 追加スケジュール 2 -->
+      <div class="swiper-slide">
+        <div class="schedule-box">
+          <h3 class="schedule-title">追加スケジュール 2</h3>
+          <!-- 追加スケジュールの内容をここに記述 -->
+        </div>
+      </div>
+
+      <!-- 追加スケジュール 3 -->
+      <div class="swiper-slide">
+        <div class="schedule-box">
+          <h3 class="schedule-title">追加スケジュール 3</h3>
+          <!-- 追加スケジュールの内容をここに記述 -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ナビゲーションボタン -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+
+<!-- 編集ページへ遷移するボタン -->
+<div class="edit-button-container">
+  <%= link_to '編集', edit_project_path(@project), class: 'edit-button' %>
+</div>
+</div>
+
+<style>
+  .project-details { margin: 20px; padding: 20px; background-color: #f9ff9; border-radius: 8px; }
+  .project-info p { margin: 8px 0; }
+  .schedule-box {
+    width: 100%;
+    max-width: 450px; /* 幅を広げ、隙間を減らす */
+    padding: 10px;
+    background-color: #fff;
+    border: 1.5px solid #1496a0;
+    border-radius: 8px;
+  }
+  .swiper-container { width: 100%; padding-top: 20px; padding-bottom: 20px; }
+  .swiper-slide { display: flex; justify-content: center; }
+  .schedule-title { text-align: center; }
+  .lead-time-box { margin-top: 8px; }
+  .lead-time-toggle {
+    margin-top: 8px;
+    padding: 4px 8px;
+    font-size: 1em;
+    cursor: pointer;
+    background-color: #1496a0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  .lead-time-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  .lead-time-table th, .lead-time-table td { padding: 2px; border: 1px solid #ddd; }
+  
+  /* タスク文言を右寄せ */
+  .lead-time-table td:first-child { text-align: left; }
+
+  .year-heading {
+    margin: 0; 
+    font-size: 1.1em;
+    padding-top: 4px; /* 行間を狭くするための設定 */
+  }
+
+  .task-table tbody tr {
+    line-height: 1.5; /* 日程の行間 */
+  }
+
+ /* 編集ボタンのスタイル */
+  .edit-button-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+
+  .edit-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1496a0;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+
+  .edit-button:hover {
+    background-color: #3e504d;
+  }
+
+  /* 他のスタイル */
+  .project-details { margin: 20px; padding: 20px; background-color: #f9f9f9; border-radius: 8px; position: relative; }
+</style>
+
+
+<!-- SwiperのJavaScriptを読み込み -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<!-- Swiperの初期化コード -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    new Swiper('.swiper-container', {
+      slidesPerView: 3,
+      spaceBetween: 10,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+    document.querySelectorAll(".lead-time-toggle").forEach(toggle => {
+      toggle.addEventListener("click", function() {
+        const container = this.nextElementSibling;
+        container.style.display = (container.style.display === "none" || container.style.display === "") ? "block" : "none";
+      });
+    });
+  });
+</script>

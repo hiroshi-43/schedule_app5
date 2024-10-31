@@ -1,0 +1,11 @@
+# config/business_time.yml
+business_hours:
+  monday: ["9:00", "17:00"]
+  tuesday: ["9:00", "17:00"]
+  wednesday: ["9:00", "17:00"]
+  thursday: ["9:00", "17:00"]
+  friday: ["9:00", "17:00"]
+
+holidays:
+  - "2024-01-01"
+  - "2024-12-25"
